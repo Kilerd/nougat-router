@@ -85,10 +85,6 @@ class Routing:
 
             # load
             for location in param_info.location:
-                print(param_info)
-                print(location, name)
-                print(self.request.headers)
-                print(self.request.cookies)
                 value_on_location = LOCATION_MAP.get(location)(self.request, name)
                 if value_on_location:
                     if param_info.append:
