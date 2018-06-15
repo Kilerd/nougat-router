@@ -148,7 +148,7 @@ class RestRouting(Routing):
         else:
             ret = await self.route(self)
             if isinstance(ret, tuple) and len(ret) == 2 and isinstance(ret[1], int):
-                self.response.status = ret[1]
+                self.response.code = ret[1]
                 ret = ret[0]
             response_type, result = response_format(ret)
             self.response.type = response_type
