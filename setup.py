@@ -18,7 +18,7 @@ setup(
     url='https://github.com/Kilerd/nougat_router',
 
     author='Kilerd Chan',
-    author_mail='blove694@gmail.com',
+    author_email='blove694@gmail.com',
 
     license='MIT',
 
