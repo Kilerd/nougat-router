@@ -27,7 +27,7 @@ class Parameter:
         self.append = append  # list or not
         self.description = description  # description
         self.warning = warning
-        if self.optional and not self.default:
+        if self.optional and self.default is None:
             raise ParamNeedDefaultValueIfItsOptional()
 
         # location iterable

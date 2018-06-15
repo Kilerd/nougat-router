@@ -137,6 +137,21 @@ class TestRestfulExtension:
             app.use(router)
 
     @pytest.mark.asyncio
+    async def test_optional_param_with_default_value_is_zero(self, app, router, port):
+        class MainRestRouting(RestRouting):
+            @get('/')
+            @param('name', str, optional=True, default=0)
+            async def without_default(self):
+                return self.params.name
+
+        router.add(MainRestRouting)
+        app.use(router)
+
+        async with TestClient(app, port) as client:
+            res = await client.get('/')
+            assert res.text == '0'
+
+    @pytest.mark.asyncio
     async def test_default_value(self, app, router, port):
 
         class MainRestRouting(RestRouting):

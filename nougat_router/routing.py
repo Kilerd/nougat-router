@@ -1,5 +1,6 @@
 from typing import List, Tuple, Dict, Any
 from nougat import HttpException
+from nougat.context import Response, Request
 from .route import Route
 from .utils import response_format
 from .exceptions import ParamCouldNotBeFormattedToTargetType
@@ -33,12 +34,15 @@ class Routing:
     prefix: str = ''
 
     def __init__(self, app, request, response, route: 'Route'):
-        self.request = request
-        self.response = response
+        self.request: Request = request
+        self.response: Response = response
         self.route: 'Route' = route
         self.app = app
 
         self.params = ParamDict()
+
+        self._origin_response_type = self.response.type
+        self.response.type = None
 
     def redirect(self, url, forever: bool=False):
         """
@@ -71,6 +75,7 @@ class Routing:
     async def handler(self):
 
         await self._handler()
+        self.response.type = self.response.type or self._origin_response_type
 
     def _params_generator(self) -> Tuple[bool, Dict[str, str]]:
         """
@@ -148,8 +153,9 @@ class RestRouting(Routing):
         else:
             ret = await self.route(self)
             if isinstance(ret, tuple) and len(ret) == 2 and isinstance(ret[1], int):
-                self.response.status = ret[1]
+                self.response.code = ret[1]
                 ret = ret[0]
             response_type, result = response_format(ret)
-            self.response.type = response_type
+            if not self.response.type:
+                self.response.type = response_type
             self.response.content = result
